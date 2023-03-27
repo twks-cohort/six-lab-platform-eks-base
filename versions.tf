@@ -8,9 +8,9 @@ terraform {
 
   backend "remote" {
     hostname     = "app.terraform.io"
-    organization = "twdps"
+    organization = "twks-cohort"
     workspaces {
-      prefix = "lab-platform-eks-base-"
+      prefix = "six-lab-platform-eks-base-"
     }
   }
 }
@@ -26,7 +26,7 @@ provider "aws" {
     tags = {
       env      = var.cluster_name
       cluster  = var.cluster_name
-      pipeline = "lab-platform-eks-base"
+      pipeline = "six-lab-platform-eks-base"
     }
   }
 }
