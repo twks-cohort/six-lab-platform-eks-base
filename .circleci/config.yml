@@ -269,63 +269,63 @@ jobs:
 workflows:
   version: 2
 
-  deploy eks-base to sandbox-us-east-2:
+  deploy eks-base to nonprod-us-east-2:
     jobs:
       - terraform/plan:
-          name: sandbox-us-east-2 change plan
+          name: nonprod-us-east-2 change plan
           context: << pipeline.parameters.context >>
           shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
-          workspace: sandbox-us-east-2
+          workspace: nonprod-us-east-2
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
             - set-environment:
-                cluster: sandbox-us-east-2
+                cluster: nonprod-us-east-2
                 source-env: op.nonprod.env
           filters: *on-push-main
 
-      - approve sandbox-us-east-2 changes:
+      - approve nonprod-us-east-2 changes:
           type: approval
           requires:
-            - sandbox-us-east-2 change plan
+            - nonprod-us-east-2 change plan
           filters: *on-push-main
 
       - terraform/apply:
-          name: apply sandbox-us-east-2 changes
+          name: apply nonprod-us-east-2 changes
           context: << pipeline.parameters.context >>
           shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
-          workspace: sandbox-us-east-2
+          workspace: nonprod-us-east-2
           terraform-version: << pipeline.parameters.terraform-version >>
           before-terraform:
             - set-environment:
-                cluster: sandbox-us-east-2
+                cluster: nonprod-us-east-2
                 source-env: op.nonprod.env
           after-terraform-init:
             - taint-node-group:
                 node-group: group-a
           after-terraform:
             - store-system-credentials:
-                cluster: sandbox-us-east-2
+                cluster: nonprod-us-east-2
             - kube/packages:
                 use-sudo: true
                 kubectl-version: 1.23.5
             - run:
                 name: create lab-system namespace
                 command: |
-                  export KUBECONFIG=kubeconfig_sandbox-us-east-2
+                  export KUBECONFIG=kubeconfig_nonprod-us-east-2
                   kubectl apply -f lab-system-namespace.yaml
             - do/circle-deploy
           requires:
-            - approve sandbox-us-east-2 changes
+            - approve nonprod-us-east-2 changes
           filters: *on-push-main
 
       - validate-eks:
-          name: validate sandbox-us-east-2 eks cluster
+          name: validate nonprod-us-east-2 eks cluster
           context: << pipeline.parameters.context >>
           shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
           source-env: op.nonprod.env
-          cluster: sandbox-us-east-2
+          cluster: nonprod-us-east-2
           requires:
-            - apply sandbox-us-east-2 changes
+            - apply nonprod-us-east-2 changes
           filters: *on-push-main
 
   release eks-base to prod-us-east-1:
