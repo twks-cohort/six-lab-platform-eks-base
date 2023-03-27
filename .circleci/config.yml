@@ -313,7 +313,7 @@ workflows:
                 command: |
                   export KUBECONFIG=kubeconfig_nonprod-us-east-2
                   kubectl apply -f lab-system-namespace.yaml
-            - do/circle-deploy
+            # - do/circle-deploy
           requires:
             - approve nonprod-us-east-2 changes
           filters: *on-push-main
