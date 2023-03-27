@@ -259,9 +259,6 @@ jobs:
       - set-kubeconfig:
           cluster: << parameters.cluster >>
       - do/circle-deploy
-      - do/slack-webhook:
-          message: lab-platform-eks-base nightly node replacement job running on << parameters.cluster >>
-          webhook-url: $LAB_EVENTS_CHANNEL_WEBHOOK
       - run:
           name: replace the oldest 1/4 of the nodes in the clister
           command: bash scripts/replace_nodes.sh << parameters.cluster >>
@@ -314,9 +311,6 @@ workflows:
                   export KUBECONFIG=kubeconfig_sandbox-us-east-2
                   kubectl apply -f lab-system-namespace.yaml
             - do/circle-deploy
-            - do/slack-webhook:
-                message: lab-platform-eks-base sandbox-us-east-2 deployment
-                webhook-url: $LAB_EVENTS_CHANNEL_WEBHOOK
           requires:
             - approve sandbox-us-east-2 changes
           filters: *on-push-main
@@ -376,9 +370,6 @@ workflows:
                   export KUBECONFIG=kubeconfig_prod-us-east-1
                   kubectl apply -f lab-system-namespace.yaml
             - do/circle-deploy
-            - do/slack-webhook:
-                message: lab-platform-eks-base prod-us-east-1 release
-                webhook-url: $LAB_EVENTS_CHANNEL_WEBHOOK
           requires:
             - approve prod-us-east-1 changes
           filters: *on-tag-main
@@ -402,39 +393,39 @@ workflows:
   #         on-tag: true
   #         filters: *on-tag-main
 
-  update monitors:
-    jobs:
-      - update-monitors:
-          name: update sandbox-us-east-2 monitors
-          context: << pipeline.parameters.context >>
-          shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
-          source-env: op.nonprod.env
-          cluster: sandbox-us-east-2
-          filters: *on-push-main
+  # update monitors:
+  #   jobs:
+  #     - update-monitors:
+  #         name: update sandbox-us-east-2 monitors
+  #         context: << pipeline.parameters.context >>
+  #         shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
+  #         source-env: op.nonprod.env
+  #         cluster: sandbox-us-east-2
+  #         filters: *on-push-main
 
-      - approve prod-us-east-1 monitors:
-          type: approval
-          requires:
-            - update sandbox-us-east-2 monitors
-          filters: *on-push-main
+  #     - approve prod-us-east-1 monitors:
+  #         type: approval
+  #         requires:
+  #           - update sandbox-us-east-2 monitors
+  #         filters: *on-push-main
 
-      - update-monitors:
-          name: update prod-us-east-1 monitors
-          context: << pipeline.parameters.context >>
-          shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
-          source-env: op.prod.env
-          cluster: prod-us-east-1
-          requires:
-            - approve prod-us-east-1 monitors
-          filters: *on-push-main
+  #     - update-monitors:
+  #         name: update prod-us-east-1 monitors
+  #         context: << pipeline.parameters.context >>
+  #         shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
+  #         source-env: op.prod.env
+  #         cluster: prod-us-east-1
+  #         requires:
+  #           - approve prod-us-east-1 monitors
+  #         filters: *on-push-main
 
-  update dashboard:
-    jobs:
-      - update-dashboard:
-          name: update dashboard
-          context: << pipeline.parameters.context >>
-          shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
-          filters: *on-push-main
+  # update dashboard:
+  #   jobs:
+  #     - update-dashboard:
+  #         name: update dashboard
+  #         context: << pipeline.parameters.context >>
+  #         shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
+  #         filters: *on-push-main
 
   nightly-node-replacements:
     triggers:
