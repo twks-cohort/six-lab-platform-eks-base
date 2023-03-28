@@ -22,7 +22,7 @@ export AWS_SECRET_ACCESS_KEY=$(cat credentials | jq -r ".Credentials.SecretAcces
 export AWS_SESSION_TOKEN=$(cat credentials | jq -r ".Credentials.SessionToken")
 
 # current versions table
-export TABLE="| dependency | sandbox-us-east-2 | prod-us-east-1 |\\\\n|----|----|----|\\\\n"
+export TABLE="| dependency | nonprod-us-east-2 | prod-us-east-1 |\\\\n|----|----|----|\\\\n"
 export EKS_VERSIONS="| eks |"
 export AMI_VERSIONS="| ami |"
 export COREDNS_VERSIONS="| coredns |"
@@ -31,7 +31,7 @@ export VPC_CNI_VERSIONS="| vpc-cni |"
 export EBS_CSI_VERSIONS="| ebs-csi |"
 
 echo "generate markdown table with the desired versions of the services managed by the lab-platform-eks-base pipeline for all clusters"
-declare -a clusters=(sandbox-us-east-2 prod-us-east-1)
+declare -a clusters=(nonprod-us-east-2 prod-us-east-1)
 
 for cluster in "${clusters[@]}";
 do
@@ -49,7 +49,7 @@ do
   if [[ $CURRENT_AMI_VERSION == "null" ]]; then
     export CURRENT_AMI_VERSION="-"
   fi
-  if [[ $cluster == "sandbox-us-east-2" ]]; then
+  if [[ $cluster == "nonprod-us-east-2" ]]; then
     export VERSION_CHECK_AMI=$CURRENT_AMI_VERSION
  fi
   export AMI_VERSIONS="$AMI_VERSIONS ${CURRENT_AMI_VERSION:-} |"

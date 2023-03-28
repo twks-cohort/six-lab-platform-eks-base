@@ -21,7 +21,7 @@ terraform output cluster_endpoint | tr -d \\n | sed 's/"//g' | opw write platfor
 terraform output cluster_certificate_authority_data | tr -d \\n | sed 's/"//g' | opw write platform-${CLUSTER} base64-certificate-authority-data -
 
 
-# platform-sandbox-us-east-2
+# platform-nonprod-us-east-2
 # platform-prod-us-east-1
 # terraform output DPSNonprodServiceAccount_encrypted_aws_secret_access_key | sed 's/"//g' | base64 -d | gpg -dq --passphrase ${GPG_KEY_PASSPHRASE} |  opw write aws-dps-2 DPSNonprodServiceAccount-aws-secret-access-key -
 # terraform output DPSNonprodServiceAccount_aws_access_key_id | tr -d \\n | sed 's/"//g' | opw write aws-dps-2 DPSNonprodServiceAccount-aws-access-key-id -

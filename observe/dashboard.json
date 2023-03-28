@@ -192,7 +192,7 @@
     {
       "definition": {
         "type": "note",
-        "content": "| dependency | sandbox |   prod   |\n|----|----|----|\n| eks | 1.22 | 1.22 |\n| ami | ami-0e2f7bdfc6ff574c9 | null |\n| coredns | v1.8.7-eksbuild.1 | v1.8.7-eksbuild.1 |\n| kube-proxy | v1.22.6-eksbuild.1 | v1.22.6-eksbuild.1 |\n| vpc-cni | v1.11.0-eksbuild.1 | v1.11.0-eksbuild.1 |\n| ebs-csi | v1.6.1-eksbuild.1 | v1.6.1-eksbuild.1 |\n",
+        "content": "| dependency | nonprod |   prod   |\n|----|----|----|\n| eks | 1.22 | 1.22 |\n| ami | ami-0e2f7bdfc6ff574c9 | null |\n| coredns | v1.8.7-eksbuild.1 | v1.8.7-eksbuild.1 |\n| kube-proxy | v1.22.6-eksbuild.1 | v1.22.6-eksbuild.1 |\n| vpc-cni | v1.11.0-eksbuild.1 | v1.11.0-eksbuild.1 |\n| ebs-csi | v1.6.1-eksbuild.1 | v1.6.1-eksbuild.1 |\n",
         "background_color": "yellow",
         "font_size": "14",
         "text_align": "left",
@@ -1325,7 +1325,7 @@
   "template_variables": [
     {
       "name": "cluster",
-      "default": "sandbox",
+      "default": "nonprod",
       "prefix": "cluster",
       "available_values": []
     },

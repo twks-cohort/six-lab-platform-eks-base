@@ -226,13 +226,13 @@ jobs:
       - setup_remote_docker
       - set-environment:
           source-env: op.nonprod.env
-          cluster: sandbox-us-east-2
+          cluster: nonprod-us-east-2
       - run:
           name: install requirements
           command: pip install -r requirements.txt
       - run:
           name: update datadog eks-base dashboard
-          command: bash scripts/deploy_dashboard.sh sandbox-us-east-2
+          command: bash scripts/deploy_dashboard.sh nonprod-us-east-2
 
   # replace the oldest 1/4 of the nodes in the cluster
   replace-nodes:
@@ -399,17 +399,17 @@ workflows:
   # update monitors:
   #   jobs:
   #     - update-monitors:
-  #         name: update sandbox-us-east-2 monitors
+  #         name: update nonprod-us-east-2 monitors
   #         context: << pipeline.parameters.context >>
   #         shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
   #         source-env: op.nonprod.env
-  #         cluster: sandbox-us-east-2
+  #         cluster: nonprod-us-east-2
   #         filters: *on-push-main
 
   #     - approve prod-us-east-1 monitors:
   #         type: approval
   #         requires:
-  #           - update sandbox-us-east-2 monitors
+  #           - update nonprod-us-east-2 monitors
   #         filters: *on-push-main
 
   #     - update-monitors:
@@ -440,17 +440,17 @@ workflows:
                 - main
     jobs:
       - replace-nodes:
-          name: nightly node replacement job on sandbox-us-east-2
+          name: nightly node replacement job on nonprod-us-east-2
           context: << pipeline.parameters.context >>
-          cluster: sandbox-us-east-2
+          cluster: nonprod-us-east-2
           source-env: op.nonprod.env
-      - replace-nodes:
-          name: nightly node replacement job on prod-us-east-1
-          context: << pipeline.parameters.context >>
-          cluster: prod-us-east-1
-          source-env: op.prod.env
-          requires:
-            - nightly node replacement job on sandbox-us-east-2
+      # - replace-nodes:
+      #     name: nightly node replacement job on prod-us-east-1
+      #     context: << pipeline.parameters.context >>
+      #     cluster: prod-us-east-1
+      #     source-env: op.prod.env
+      #     requires:
+      #       - nightly node replacement job on nonprod-us-east-2
 
 
   # perform the pipeline health checks and compare desired eks component verions with current release versions
@@ -463,19 +463,19 @@ workflows:
               only:
                 - main
     jobs:
-      - update-dashboard:
-          name: update dashboard
-          shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
-          context: << pipeline.parameters.context >>
+      # - update-dashboard:
+      #     name: update dashboard
+      #     shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
+      #     context: << pipeline.parameters.context >>
       - validate-eks:
-          name: validate sandbox-us-east-2 eks cluster
+          name: validate nonprod-us-east-2 eks cluster
           context: << pipeline.parameters.context >>
           shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
           source-env: op.nonprod.env
-          cluster: sandbox-us-east-2
-      - validate-eks:
-          name: validate prod-us-east-1 eks cluster
-          context: << pipeline.parameters.context >>
-          shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
-          source-env: op.prod.env
-          cluster: prod-us-east-1
+          cluster: nonprod-us-east-2
+      # - validate-eks:
+      #     name: validate prod-us-east-1 eks cluster
+      #     context: << pipeline.parameters.context >>
+      #     shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
+      #     source-env: op.prod.env
+      #     cluster: prod-us-east-1
