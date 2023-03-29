@@ -258,10 +258,6 @@ jobs:
           source-env: << parameters.source-env >>
       - set-kubeconfig:
           cluster: << parameters.cluster >>
-      - do/circle-deploy
-      # - do/slack-webhook:
-      #     message: lab-platform-eks-base nightly node replacement job running on << parameters.cluster >>
-      #     webhook-url: $LAB_EVENTS_CHANNEL_WEBHOOK
       - run:
           name: replace the oldest 1/4 of the nodes in the clister
           command: bash scripts/replace_nodes.sh << parameters.cluster >>
@@ -444,14 +440,7 @@ workflows:
           context: << pipeline.parameters.context >>
           cluster: nonprod-us-east-2
           source-env: op.nonprod.env
-      # - replace-nodes:
-      #     name: nightly node replacement job on prod-us-east-1
-      #     context: << pipeline.parameters.context >>
-      #     cluster: prod-us-east-1
-      #     source-env: op.prod.env
-      #     requires:
-      #       - nightly node replacement job on nonprod-us-east-2
-
+    
 
   # perform the pipeline health checks and compare desired eks component verions with current release versions
   nightly-validation:
@@ -463,19 +452,10 @@ workflows:
               only:
                 - main
     jobs:
-      # - update-dashboard:
-      #     name: update dashboard
-      #     shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
-      #     context: << pipeline.parameters.context >>
       - validate-eks:
           name: validate nonprod-us-east-2 eks cluster
           context: << pipeline.parameters.context >>
           shell: op run --env-file op.nonprod.env -- /bin/bash -eo pipefail
           source-env: op.nonprod.env
           cluster: nonprod-us-east-2
-      # - validate-eks:
-      #     name: validate prod-us-east-1 eks cluster
-      #     context: << pipeline.parameters.context >>
-      #     shell: op run --env-file op.prod.env -- /bin/bash -eo pipefail
-      #     source-env: op.prod.env
-      #     cluster: prod-us-east-1
+    

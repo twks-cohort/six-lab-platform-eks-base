@@ -1,1 +1,1 @@
-{{ op://cohorts/platform-$ENV/kubeconfig }}
+{{ op://cohorts/six-platform-$ENV/kubeconfig }}
