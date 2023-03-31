@@ -25,7 +25,7 @@
     "default_node_group_instance_types": ["t2.2xlarge","t3.2xlarge","t3a.2xlarge","m5n.2xlarge","m5.2xlarge","m4.2xlarge"],
 
     "oidc_client_id": "{{ op://cohorts/six-svc-auth0/twdpsio-dpsctl-client-id }}",
-    "oidc_groups_claim": "https://github.org/twks-cohort/teams/team-six",
+    "oidc_groups_claim": "https://github.org/twks-cohort/teams/team_six",
     "oidc_identity_provider_config_name": "Auth0",
     "oidc_issuer_url": "https://six-twdpsio.us.auth0.com/"
 }
